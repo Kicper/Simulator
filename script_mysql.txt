@@ -1,0 +1,161 @@
+DROP TABLE category_preference;
+DROP TABLE item_preference;
+DROP TABLE offer;
+DROP TABLE auction_history;
+DROP TABLE item;
+DROP TABLE person;
+DROP TABLE category;
+
+
+CREATE TABLE [Symulator].[dbo].[category](
+	[category_id] INT NOT NULL IDENTITY(1, 1),
+	[name] VARCHAR(255) NOT NULL,
+	PRIMARY KEY(category_id)
+);
+
+
+CREATE TABLE [Symulator].[dbo].[item](
+	[item_id] INT NOT NULL IDENTITY(1, 1),
+	[name] VARCHAR(255) NOT NULL,
+	[category_id] INT NOT NULL,
+	PRIMARY KEY(item_id),
+	CONSTRAINT fk_item_category
+		FOREIGN KEY(category_id)
+			REFERENCES category(category_id)
+); 
+
+
+CREATE TABLE [Symulator].[dbo].[person](
+	[person_id] INT NOT NULL IDENTITY(1, 1),
+	[login] VARCHAR(255) NOT NULL,
+	[password] VARCHAR(255) NOT NULL,
+	PRIMARY KEY(person_id)
+);
+
+
+CREATE TABLE [Symulator].[dbo].[category_preference](
+	[category_preference_id] INT NOT NULL IDENTITY(1, 1),
+	[rating] INT NOT NULL,
+	[date_add] DATETIME NOT NULL,
+	[date_update] DATETIME,
+	[category_id] INT NOT NULL,
+	[person_id] INT NOT NULL,
+	PRIMARY KEY(category_preference_id),
+	CONSTRAINT fk_category_preference_category
+		FOREIGN KEY(category_id)
+			REFERENCES category(category_id),
+	CONSTRAINT fk_category_preference_person
+		FOREIGN KEY(person_id)
+			REFERENCES person(person_id)
+);
+
+
+CREATE TABLE [Symulator].[dbo].[item_preference](
+	[item_preference_id] INT NOT NULL IDENTITY(1, 1),
+	[rating] INT NOT NULL,
+	[date_add] DATETIME NOT NULL,
+	[date_update] DATETIME,
+	[item_id] INT NOT NULL,
+	[person_id] INT NOT NULL,
+	PRIMARY KEY(item_preference_id),
+	CONSTRAINT fk_item_preference_item
+		FOREIGN KEY(item_id)
+			REFERENCES item(item_id),
+	CONSTRAINT fk_item_preference_person
+		FOREIGN KEY(person_id)
+			REFERENCES person(person_id)
+);
+
+
+CREATE TABLE [Symulator].[dbo].[auction_history](
+	[auction_history_id] INT NOT NULL IDENTITY(1, 1),
+	[item_id] INT NOT NULL,
+	PRIMARY KEY(auction_history_id),
+	CONSTRAINT fk_auction_history_item
+		FOREIGN KEY(item_id)
+			REFERENCES item(item_id)
+);
+
+
+CREATE TABLE [Symulator].[dbo].[offer](
+	[offer_id] INT NOT NULL IDENTITY(1, 1),
+	[date] TIMESTAMP NOT NULL,
+	[price] INT NOT NULL,
+	[status] VARCHAR(255) NOT NULL,
+	[person_id] INT NOT NULL,
+	[auction_history_id] INT,
+	PRIMARY KEY(offer_id),
+	CONSTRAINT fk_offer_auction_history
+		FOREIGN KEY(auction_history_id)
+			REFERENCES auction_history(auction_history_id),
+	CONSTRAINT fk_offer_person
+		FOREIGN KEY(person_id)
+			REFERENCES person(person_id)
+);
+
+
+
+INSERT INTO [Symulator].[dbo].[category] (name)
+VALUES
+	('Furniture'),
+	('Game'),
+	('Movie'),
+	('Book'),
+	('Sculpture'),
+	('Painting'),
+	('Vehicle'),
+	('Poster'),
+	('Computer'),
+	('Phone');
+
+
+
+INSERT INTO [Symulator].[dbo].[item] (name, category_id)
+VALUES
+	('Chair', 1),
+	('Couch', 1),
+	('Shelf', 1),
+	('Desk', 1),
+	('Wardrobe', 1),
+	('Tomb_Raider', 2),
+	('Witcher 3', 2),
+	('Halo_Infinite', 2),
+	('Pulp_Fiction', 3),
+	('Forrest_Gump', 3),
+	('Interstellar', 3),
+	('Harry_Potter', 4),
+	('Lord_Of_The_Rings', 4),
+	('Idiot', 4),
+	('Venus_From_Milo', 5),
+	('David', 5),
+	('Mona_Lisa', 6),
+	('Girl_With_A_Pearl_Earring', 6),
+	('Car', 7),
+	('Bike', 7),
+	('Tank', 7),
+	('Star_Wars', 8),
+	('Lego', 8),
+	('Guitar', 8),
+	('Lenovo', 9),
+	('Asus', 9),
+	('Apple', 9),
+	('Samsung', 10),
+	('Nokia', 10);
+	
+	
+INSERT INTO [Symulator].[dbo].[person] (login, password)
+VALUES
+	('Adam', 'qwerty'),
+	('Wiktor', 'q1w2e3r4'),
+	('Phoebe', 'qwerty1234'),
+	('Jack', 'qwerty'),
+	('Magdalena', 'magda'),
+	('Andrzej', 'password'),
+	('Tom', 'wsad'),
+	('Katarzyna', 'wsad1234'),
+	('Jakub', '1234'),
+	('Alicja', '87654321');
+
+
+SELECT * FROM auction_history;
+SELECT * FROM offer;
